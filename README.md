@@ -7,13 +7,13 @@ Naming avoiding ambiguity automatically assigning valid identifiers
 `Naaaavi` (pronounced `nah-vee` as if someone hadn't injected a load of ambiguous confusing `a` characters) is a simple Python tool for generating identifiers.
 It attempts to generate identifiers that:
 
-* uses a character set (or other system) that aims to be human-friendly
+* use a character set (or other system) that aims to be human-friendly
 * can be checksummed
-* avoids ambiguity by testing the identifier against several `rejectors`
+* avoid ambiguity by testing the identifier against several `rejectors`
 * are somewhat chronologically sortable
 * are generated in a predictable fashion
 
-It generates human-friendly identifiers using `diceware` (soon) or the `zbase32` alphabet, and allows for screening of common sources of confusion such as look-alike pairs and repetitive characters.
+It generates human-friendly identifiers using `diceware` (soon) or the `zbase32` alphabet, and allows for screening of common sources of confusion such as look-alike pairs and repetitive characters. `Naaaavi` also provides limited support for generating `ZPL` to print your nice new barcodes.
 
 ## What is it not?
 
