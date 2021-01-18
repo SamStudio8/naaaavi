@@ -5,7 +5,24 @@ Naming avoiding ambiguity automatically assigning valid identifiers
 ## What is it?
 
 `Naaaavi` (pronounced `nah-vee` as if someone hadn't injected a load of ambiguous confusing `a` characters) is a simple Python tool for generating identifiers.
-It generates human-friendly identifiers using `diceware` (soon) or `zbase32`, but also screens candidate identifiers for look-alike pairs or long repeats that may cause errors during transcribing.
+It attempts to generate identifiers that:
+
+* uses a character set (or other system) that aims to be human-friendly
+* can be checksummed
+* avoids ambiguity by testing the identifier against several `rejectors`
+* are somewhat chronologically sortable
+
+It generates human-friendly identifiers using `diceware` (soon) or the `zbase32` alphabet, and allows for screening of common sources of confusion such as look-alike pairs and repetitive characters.
+
+## What is it not?
+
+`Naaaavi` does not:
+
+* encode anything into the identifiers
+* generate universally or globally unique identifiers
+
+
+## How do I use it?
 
 ### Generate barcodes
 
@@ -23,4 +40,4 @@ It generates human-friendly identifiers using `diceware` (soon) or `zbase32`, bu
 
 ### I don't like your funny command name
 
-`navi` is also installed so you don't have to remember that there are currently four `a` characters in `naaaavi`.
+The `navi` command is provided as a synonym of `naaaavi` so you don't have to remember that there are currently four `a` characters in `naaaavi`.
