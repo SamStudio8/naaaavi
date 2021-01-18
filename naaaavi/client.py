@@ -19,10 +19,11 @@ def cli():
     generate_parser.add_argument("-n", required=False, type=int, default=1)
     generate_parser.add_argument("--rejectors",  nargs='+', required=False)
 
+    generate_parser.add_argument("--last-code", required=False, type=str, default=None)
+
     generate_parser.add_argument("--prefix", required=False, type=str, default="")
     generate_parser.add_argument("--upper", required=False, action="store_true",
             help="Force uppercase characters if you want to feel like you are stuck in an 1980s terminal")
-    # start pos
 
     validate_parser = action_parser.add_parser("validate")
     validate_parser.add_argument("--barcodes",  nargs='+', required=True)
@@ -86,7 +87,15 @@ def _gen_increment_barcode_positions(barcode, i, alphabet):
 def navi_generate(alphabet, size, rounds, checksum, args, rejectors={}):
     n_gen_total = 1
     n_gen_valid = 0
-    candidate_barcode = [0] * size
+
+    if args.last_code:
+        # Map the last barcode to code point space and increment it to start
+        sys.stderr.write("[WARN] You have provided last_code %s. This MUST NOT have a check digit to start from the correct last position.\n" % args.last_code)
+        last_barcode = args.last_code.split("-", 1)[-1].replace('.', '').replace('-', '')
+        candidate_barcode = [ alphabet.index(b.lower()) for b in last_barcode ]
+        candidate_barcode = _gen_increment_barcode_positions(candidate_barcode, -1, alphabet)
+    else:
+        candidate_barcode = [0] * size
 
     # Attempt to generate n rounds of barcodes, but abort if we've spent more than n_rounds*1000
     while n_gen_valid < rounds:
