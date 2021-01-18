@@ -11,6 +11,7 @@ It attempts to generate identifiers that:
 * can be checksummed
 * avoids ambiguity by testing the identifier against several `rejectors`
 * are somewhat chronologically sortable
+* are generated in a predictable fashion
 
 It generates human-friendly identifiers using `diceware` (soon) or the `zbase32` alphabet, and allows for screening of common sources of confusion such as look-alike pairs and repetitive characters.
 
@@ -18,6 +19,7 @@ It generates human-friendly identifiers using `diceware` (soon) or the `zbase32`
 
 `Naaaavi` does not:
 
+* randomly generate identifiers
 * encode anything into the identifiers
 * generate universally or globally unique identifiers
 
