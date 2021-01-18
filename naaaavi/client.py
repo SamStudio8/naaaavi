@@ -102,17 +102,17 @@ def navi_generate(alphabet, size, rounds, checksum, args, rejectors={}):
     while n_gen_valid < rounds:
         valid = True # assume this candidate is not garbage
 
+        # Convert barcode candidate to string
+        str_barcode = "".join([alphabet[i] for i in candidate_barcode])
+
         # Test if the candidate is garbage
         for rejector_name, rejector_conf in rejectors.items():
             reject_func = NAVI_REJECTORS[rejector_name]
-            if reject_func(candidate_barcode, rejector_conf):
+            if reject_func(candidate_barcode, str_barcode, rejector_conf):
                 valid = False
                 break # bail on the first sign this barcode is trash
 
         if valid:
-            # Convert barcode candidate to string
-            str_barcode = "".join([alphabet[i] for i in candidate_barcode])
-
             # Generate checksum if required
             check_int = None
             check_char = ""
