@@ -73,15 +73,16 @@ def cli():
 
 
 def _gen_increment_barcode_positions(barcode, i, alphabet):
-    barcode[i] += 1
+    try:
+        barcode[i] += 1
+    except IndexError:
+        sys.stderr.write("[FAIL] Barcode space appears to have been exhausted. Larger --size required.\n")
+        sys.exit(3)
 
     if barcode[i] >= len(alphabet):
         barcode[i] = 0
         barcode = _gen_increment_barcode_positions(barcode, i-1, alphabet)
 
-    if barcode[0] >= len(alphabet):
-        sys.stderr.write("[FAIL] Barcode space appears to have been exhausted incrementing pos %d of barcode array:" % (pos, str(barcode)))
-        sys.exit(3)
     return barcode
 
 def navi_generate(alphabet, size, rounds, checksum, args, rejectors={}):
