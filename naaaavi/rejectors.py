@@ -15,7 +15,14 @@ def max_repeats(barcode, conf):
             return True # return true to reject
     return False
 
+def min_unique(barcode, conf):
+    min_unique = int(conf[0])
+
+    if len(set(barcode)) < min_unique:
+        return True
+    return False
 
 REJECTORS = {
-    "max_repeats": max_repeats
+    "max_repeats": max_repeats,
+    "min_unique": min_unique,
 }
