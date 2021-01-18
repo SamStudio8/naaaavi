@@ -1,0 +1,38 @@
+zbase32 = [
+    'y',
+    'b',
+    'n',
+    'd',
+    'r',
+    'f',
+    'g',
+    '8',
+    'e',
+    'j',
+    'k',
+    'm',
+    'c',
+    'p',
+    'q',
+    'x',
+    'o',
+    't',
+    '1',
+    'u',
+    'w',
+    'i',
+    's',
+    'z',
+    'a',
+    '3',
+    '4',
+    '5',
+    'h',
+    '7',
+    '6',
+    '9',
+]
+
+ALPHABETS = {
+    "zbase32": zbase32, # http://philzimmermann.com/docs/human-oriented-base-32-encoding.txt
+}
