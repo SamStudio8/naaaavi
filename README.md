@@ -20,3 +20,7 @@ It generates human-friendly identifiers using `diceware` (soon) or `zbase32`, bu
     YYBYBY6 1
     YYBXBY6 0
     YYBYBY7 0
+
+### I don't like your funny command name
+
+`navi` is also installed so you don't have to remember that there are currently four `a` characters in `naaaavi`.
