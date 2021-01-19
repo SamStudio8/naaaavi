@@ -1,3 +1,4 @@
+import os
 import sys
 
 class NaviRejector:
@@ -41,6 +42,7 @@ class Rejector_MinUnique(NaviRejector):
         if len(set(int_barcode)) < self.min_unique:
             return True
         return False
+
 
 class Rejector_ISMPFlips(NaviRejector):
     def __init__(self, conf):
@@ -101,8 +103,47 @@ class Rejector_ISMPFlips(NaviRejector):
         return False
 
 
+class Rejector_Banlist(NaviRejector):
+    def __init__(self, conf):
+        self.name = "ban_list"
+        self.path = conf[0]
+        self.entries = []
+        super().__init__(conf)
+
+        if not os.path.exists(self.path):
+            sys.stderr.write("[FAIL] Could not open ban_list %s\n" % self.path)
+            self.conf = ""
+            return
+
+        self.name = os.path.basename(self.path)
+
+        # Hash for log
+        import hashlib
+        hash_md5 = hashlib.md5()
+        with open(self.path, "rb") as f:
+            for chunk in iter(lambda: f.read(4096), b""):
+                hash_md5.update(chunk)
+        self.hash = hash_md5.hexdigest()
+
+        # Now open again for the list itself
+        with open(self.path, "r") as f:
+            for line in f:
+                self.entries.append(line.strip())
+
+        self.entries = set(self.entries)
+
+        # Override conf string
+        self.conf = "%s@%d@%s" % (self.name, len(self.entries), self.hash)
+
+    def handle_barcode(self, int_barcode, str_barcode):
+        for banned in self.entries:
+            if banned.lower() in str_barcode.lower():
+                return True
+        return False
+
 REJECTORS = {
     "max_repeats": Rejector_MaxRepeats,
     "min_unique": Rejector_MinUnique,
     "ismp_flips": Rejector_ISMPFlips,
+    "ban_list": Rejector_Banlist,
 }
