@@ -59,7 +59,9 @@ def cli():
                     sys.stderr.write("[FAIL] Rejector '%s' not in rejectors\n" % rejector_name)
                     ok = False
                 else:
-                    rejectors_d[rejector_name] = rejector_conf.split(',')
+                    # Init the rejector class
+                    rejector_cls = NAVI_REJECTORS[rejector_name]
+                    rejectors_d[rejector_name] = rejector_cls( rejector_conf.split(',') )
 
     if not ok:
         sys.exit(1)
@@ -106,9 +108,8 @@ def navi_generate(alphabet, size, rounds, checksum, args, rejectors={}):
         str_barcode = "".join([alphabet[i] for i in candidate_barcode])
 
         # Test if the candidate is garbage
-        for rejector_name, rejector_conf in rejectors.items():
-            reject_func = NAVI_REJECTORS[rejector_name]
-            if reject_func(candidate_barcode, str_barcode, rejector_conf):
+        for rejector_name, rejector in rejectors.items():
+            if rejector.handle_barcode(candidate_barcode, str_barcode):
                 valid = False
                 break # bail on the first sign this barcode is trash
 
@@ -134,7 +135,7 @@ def navi_generate(alphabet, size, rounds, checksum, args, rejectors={}):
                 check_char,
                 args.alphabet,
                 args.checksum,
-                ';'.join(["%s=%s" % (k, v) for k, v in rejectors.items()]),
+                ';'.join(["%s" % rejector.get_log_line() for rejector_name, rejector in rejectors.items()]),
                 __version__,
             ]) + '\n')
 
