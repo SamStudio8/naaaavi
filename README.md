@@ -28,17 +28,26 @@ It generates human-friendly identifiers using `diceware` (soon) or the `zbase32`
 
 ### Generate barcodes
 
-    $ naaaavi generate --alphabet zbase32 --checksum luhn_mod_n --size 6 --rejectors max_repeats:2 -n 10 --upper --prefix 'HOOT-'
-    HOOT-YYBYBY     6       zbase32 luhn_mod_n      max_repeats=['2']       0.1.0
+    $ naaaavi generate --alphabet zbase32 --checksum luhn_mod_n --size 5 --rejectors max_repeats:2 min_unique:3 ismp_flips: better_profanity: -n 10 --prefix 'HOOT-' --upper
+    HOOT-YYBYN4     HOOT-YYBYN      4       zbase32 luhn_mod_n      max_repeats:2;min_unique:3;ismp_flips:;better_profanity:        0.4.1
+    HOOT-YYBYDA     HOOT-YYBYD      A       zbase32 luhn_mod_n      max_repeats:2;min_unique:3;ismp_flips:;better_profanity:        0.4.1
+    HOOT-YYBYRS     HOOT-YYBYR      S       zbase32 luhn_mod_n      max_repeats:2;min_unique:3;ismp_flips:;better_profanity:        0.4.1
+    HOOT-YYBYFW     HOOT-YYBYF      W       zbase32 luhn_mod_n      max_repeats:2;min_unique:3;ismp_flips:;better_profanity:        0.4.1
+    HOOT-YYBYG1     HOOT-YYBYG      1       zbase32 luhn_mod_n      max_repeats:2;min_unique:3;ismp_flips:;better_profanity:        0.4.1
+    HOOT-YYBY8O     HOOT-YYBY8      O       zbase32 luhn_mod_n      max_repeats:2;min_unique:3;ismp_flips:;better_profanity:        0.4.1
+    HOOT-YYBYEQ     HOOT-YYBYE      Q       zbase32 luhn_mod_n      max_repeats:2;min_unique:3;ismp_flips:;better_profanity:        0.4.1
+    HOOT-YYBYJC     HOOT-YYBYJ      C       zbase32 luhn_mod_n      max_repeats:2;min_unique:3;ismp_flips:;better_profanity:        0.4.1
+    HOOT-YYBYKK     HOOT-YYBYK      K       zbase32 luhn_mod_n      max_repeats:2;min_unique:3;ismp_flips:;better_profanity:        0.4.1
+    HOOT-YYBYME     HOOT-YYBYM      E       zbase32 luhn_mod_n      max_repeats:2;min_unique:3;ismp_flips:;better_profanity:        0.4.1
 
 ### Validate barcodes
 
-    $ naaaavi validate --alphabet zbase32 --checksum luhn_mod_n --barcodes HOOT-YYBYBY.6 HOOT-YYBYBY6 YYBYBY6 YYBXBY6 YYBYBY7
-    HOOT-YYBYBY.6   1
-    HOOT-YYBYBY6    1
-    YYBYBY6 1
-    YYBXBY6 0
-    YYBYBY7 0
+    $ naaaavi validate --alphabet zbase32 --checksum luhn_mod_n --barcodes HOOT-YYBYN.4 HOOT-YYBYN4 YYBYN4 YYBYM4 YYBYN5
+    HOOT-YYBYN.4    1
+    HOOT-YYBYN4     1
+    YYBYN4  1
+    YYBYM4  0
+    YYBYN5  0
 
 ## Rejectors
 
