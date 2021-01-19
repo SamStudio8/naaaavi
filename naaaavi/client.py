@@ -107,23 +107,25 @@ def navi_generate(alphabet, size, rounds, checksum, args, rejectors={}):
         # Convert barcode candidate to string
         str_barcode = "".join([alphabet[i] for i in candidate_barcode])
 
+        # Generate checksum if required
+        check_int = None
+        check_char = ""
+        if checksum:
+            try:
+                check_int, check_char = checksum("generate", str_barcode, alphabet)
+            except Exception as e:
+                sys.stderr.write("[FAIL] Could not generate %s checksum for barcode %s. Exception: %s\n" % (args.checksum, str_barcode, str(e)))
+                sys.exit(2)
+
+
         # Test if the candidate is garbage
+        str_barcode_with_checksum = str_barcode + check_char
         for rejector_name, rejector in rejectors.items():
-            if rejector.handle_barcode(candidate_barcode, str_barcode):
+            if rejector.handle_barcode(candidate_barcode, str_barcode_with_checksum):
                 valid = False
                 break # bail on the first sign this barcode is trash
 
         if valid:
-            # Generate checksum if required
-            check_int = None
-            check_char = ""
-            if checksum:
-                try:
-                    check_int, check_char = checksum("generate", str_barcode, alphabet)
-                except Exception as e:
-                    sys.stderr.write("[FAIL] Could not generate %s checksum for barcode %s. Exception: %s\n" % (args.checksum, str_barcode, str(e)))
-                    sys.exit(2)
-
             if args.upper:
                 str_barcode = str_barcode.upper()
                 check_char = check_char.upper()
@@ -131,6 +133,7 @@ def navi_generate(alphabet, size, rounds, checksum, args, rejectors={}):
             # Count and output
             n_gen_valid += 1
             sys.stdout.write('\t'.join([
+                args.prefix + str_barcode + check_char,
                 args.prefix + str_barcode,
                 check_char,
                 args.alphabet,
