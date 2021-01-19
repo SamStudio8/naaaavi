@@ -51,6 +51,10 @@ It generates human-friendly identifiers using `diceware` (soon) or the `zbase32`
 
 ## Notes
 
+### I work in COG and would love to use this too!
+
+`Naaaavi` does not generate globally or universally unique identifiers, so please get in touch to make sure our (barcode) worlds don't collide.
+
 ### I don't like your funny command name
 
 The `navi` command is provided as a synonym of `naaaavi` so you don't have to remember that there are currently four `a` characters in `naaaavi`.
