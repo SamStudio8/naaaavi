@@ -95,7 +95,17 @@ def navi_generate(alphabet, size, rounds, checksum, args, rejectors={}):
         # Map the last barcode to code point space and increment it to start
         sys.stderr.write("[WARN] You have provided last_code %s. This MUST NOT have a check digit to start from the correct last position.\n" % args.last_code)
         last_barcode = args.last_code.split("-", 1)[-1].replace('.', '').replace('-', '')
+
+        if len(last_barcode) > size:
+            sys.stderr.write("[FAIL] You have provided last_code %s, but it is longer than the requested size of the barcode. Did you accidentally forget to remove the check digit?\n" % args.last_code)
+            sys.exit(4)
+
         candidate_barcode = [ alphabet.index(b.lower()) for b in last_barcode ]
+        if len(last_barcode) < size:
+            sys.stderr.write("[WARN] You have provided last_code %s, but it is shorter than the requested size of the barcode. Starting with last_code as a prefix and suffxing the remainder of the barcode with the start of the selected alphabet.\n" % args.last_code)
+            candidate_barcode.extend( [0] * (size - len(last_barcode)) )
+            print(candidate_barcode)
+
         candidate_barcode = _gen_increment_barcode_positions(candidate_barcode, -1, alphabet)
     else:
         candidate_barcode = [0] * size
