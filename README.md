@@ -40,6 +40,17 @@ It generates human-friendly identifiers using `diceware` (soon) or the `zbase32`
     YYBXBY6 0
     YYBYBY7 0
 
+## Rejectors
+
+* `max_repeats` will reject any identifier which repeats a particular symbol more than `n` times consecutively
+* `min_unique` will reject any identifier that does not have at least `n` unique characters
+* `ismp_flips` will reject any identifier that has at least one look alike pair noted as potentially confusing by the Institute for Safe Medication Practices
+* `ban_list` will reject any identifier that has a prefix or suffix in your list
+* `regex_list` will reject any identifier that searches positive against a list of regular expressions
+* `better_profanity` (requires `pip install better_profanity`) will overzealously reject any identifier that could be mildly amusing
+
+## Notes
+
 ### I don't like your funny command name
 
 The `navi` command is provided as a synonym of `naaaavi` so you don't have to remember that there are currently four `a` characters in `naaaavi`.

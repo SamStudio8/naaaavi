@@ -181,10 +181,35 @@ class Rejector_Regexlist(NaviRejector):
                 return True
         return False
 
+
+class Rejector_BetterProfanity(NaviRejector):
+    def __init__(self, conf):
+        self.name = "better_profanity"
+
+        from better_profanity import profanity
+        profanity.load_censor_words()
+        self.profanity = profanity
+        super().__init__(conf)
+
+    def handle_barcode(self, int_barcode, str_barcode):
+        # better_profanity only matches on word boundaries
+        # so chop up the barcode is all possible combos and check them
+        parts = []
+        for i in range(len(str_barcode)):
+            parts.append( str_barcode[0:i] )
+            parts.append( str_barcode[i:] )
+
+        for part in parts:
+            if self.profanity.contains_profanity(part):
+                return True
+        return False
+
+
 REJECTORS = {
     "max_repeats": Rejector_MaxRepeats,
     "min_unique": Rejector_MinUnique,
     "ismp_flips": Rejector_ISMPFlips,
     "ban_list": Rejector_Banlist,
     "regex_list": Rejector_Regexlist,
+    "better_profanity": Rejector_BetterProfanity,
 }
