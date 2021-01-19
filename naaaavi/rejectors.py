@@ -1,5 +1,6 @@
 import os
 import sys
+import re
 
 class NaviRejector:
     def __init__(self, conf):
@@ -141,9 +142,49 @@ class Rejector_Banlist(NaviRejector):
                 return True
         return False
 
+
+class Rejector_Regexlist(NaviRejector):
+    def __init__(self, conf):
+        self.name = "ban_regex"
+        self.path = conf[0]
+        self.entries = []
+        super().__init__(conf)
+
+        if not os.path.exists(self.path):
+            sys.stderr.write("[FAIL] Could not open regex_list %s\n" % self.path)
+            self.conf = ""
+            return
+
+        self.fname = os.path.basename(self.path)
+
+        # Hash for log
+        import hashlib
+        hash_md5 = hashlib.md5()
+        with open(self.path, "rb") as f:
+            for chunk in iter(lambda: f.read(4096), b""):
+                hash_md5.update(chunk)
+        self.hash = hash_md5.hexdigest()
+
+        # Now open again for the list itself
+        with open(self.path, "r") as f:
+            for line in f:
+                self.entries.append( re.compile(line.strip(), re.IGNORECASE) )
+
+        self.entries = set(self.entries)
+
+        # Override conf string
+        self.conf = "%s:%s@%d@%s" % (self.name, self.fname, len(self.entries), self.hash)
+
+    def handle_barcode(self, int_barcode, str_barcode):
+        for regex in self.entries:
+            if re.search(regex, str_barcode.lower()):
+                return True
+        return False
+
 REJECTORS = {
     "max_repeats": Rejector_MaxRepeats,
     "min_unique": Rejector_MinUnique,
     "ismp_flips": Rejector_ISMPFlips,
     "ban_list": Rejector_Banlist,
+    "regex_list": Rejector_Regexlist,
 }
