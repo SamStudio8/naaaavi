@@ -104,7 +104,6 @@ def navi_generate(alphabet, size, rounds, checksum, args, rejectors={}):
         if len(last_barcode) < size:
             sys.stderr.write("[WARN] You have provided last_code %s, but it is shorter than the requested size of the barcode. Starting with last_code as a prefix and suffxing the remainder of the barcode with the start of the selected alphabet.\n" % args.last_code)
             candidate_barcode.extend( [0] * (size - len(last_barcode)) )
-            print(candidate_barcode)
 
         candidate_barcode = _gen_increment_barcode_positions(candidate_barcode, -1, alphabet)
     else:
