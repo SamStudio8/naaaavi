@@ -1,5 +1,6 @@
 import argparse
 import sys
+import csv
 
 from naaaavi.version import __version__
 from naaaavi.alphabets import ALPHABETS as NAVI_ALPHABETS
@@ -25,8 +26,13 @@ def cli():
     generate_parser.add_argument("--upper", required=False, action="store_true",
             help="Force uppercase characters if you want to feel like you are stuck in an 1980s terminal")
 
+
     validate_parser = action_parser.add_parser("validate")
-    validate_parser.add_argument("--barcodes",  nargs='+', required=True)
+    validate_source_group = validate_parser.add_mutually_exclusive_group(required=True)
+    validate_source_group.add_argument("--barcodes",  nargs='+')
+    validate_source_group.add_argument("--csv", nargs=2, metavar=('fn', 'column'),
+            help="File name and column name to validate barcodes from")
+
     validate_parser.add_argument("--alphabet", required=True)
     validate_parser.add_argument("--checksum", required=True)
 
@@ -69,7 +75,12 @@ def cli():
     if args.command == "generate":
         navi_generate(alphabet, args.size, args.n, checksum, args, rejectors=rejectors_d)
     elif args.command == "validate":
-        navi_validate(args.barcodes, alphabet, checksum, args)
+        if args.barcodes:
+            navi_validate(args.barcodes, alphabet, checksum, args)
+        elif args.csv:
+            with open(args.csv[0]) as csv_fh:
+                for row in csv.DictReader(csv_fh):
+                    navi_validate([ row[args.csv[1]] ], alphabet, checksum, args)
     else:
         sys.exit(2)
 
