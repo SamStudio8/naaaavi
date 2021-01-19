@@ -115,7 +115,7 @@ class Rejector_Banlist(NaviRejector):
             self.conf = ""
             return
 
-        self.name = os.path.basename(self.path)
+        self.fname = os.path.basename(self.path)
 
         # Hash for log
         import hashlib
@@ -133,7 +133,7 @@ class Rejector_Banlist(NaviRejector):
         self.entries = set(self.entries)
 
         # Override conf string
-        self.conf = "%s@%d@%s" % (self.name, len(self.entries), self.hash)
+        self.conf = "%s:%s@%d@%s" % (self.name, self.fname, len(self.entries), self.hash)
 
     def handle_barcode(self, int_barcode, str_barcode):
         for banned in self.entries:
