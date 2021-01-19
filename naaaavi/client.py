@@ -159,8 +159,6 @@ def navi_generate(alphabet, size, rounds, checksum, args, rejectors={}):
         if n_gen_total > (rounds * 1000000):
             sys.stderr.write("[WARN] Failed to generate the set number of barcodes. Your rejectors may be too restrictive.\n")
             break
-    
-    pass
 
 def navi_validate(barcodes, alphabet, checksum, args):
     for barcode in barcodes:
