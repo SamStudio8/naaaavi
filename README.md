@@ -57,6 +57,7 @@ It generates human-friendly identifiers using `diceware` (soon) or the `zbase32`
 * `ban_list` will reject any identifier that has a prefix or suffix in your list
 * `regex_list` will reject any identifier that searches positive against a list of regular expressions
 * `better_profanity` (requires `pip install better_profanity`) will overzealously reject any identifier that could be mildly amusing
+* `not_exclusive` will reject any identifier that exclusively contains a set of case-sensitive symbols
 
 ## Notes
 

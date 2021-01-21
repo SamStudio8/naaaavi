@@ -205,6 +205,19 @@ class Rejector_BetterProfanity(NaviRejector):
         return False
 
 
+class Rejector_NotExclusive(NaviRejector):
+    def __init__(self, conf):
+        self.name = "not_exclusive"
+        self.symbols = list(conf[0])
+        super().__init__(conf)
+
+    def handle_barcode(self, int_barcode, str_barcode):
+        for symbol in str_barcode:
+            if symbol not in self.symbols:
+                return False # return false to not reject
+        return True
+
+
 REJECTORS = {
     "max_repeats": Rejector_MaxRepeats,
     "min_unique": Rejector_MinUnique,
@@ -212,4 +225,5 @@ REJECTORS = {
     "ban_list": Rejector_Banlist,
     "regex_list": Rejector_Regexlist,
     "better_profanity": Rejector_BetterProfanity,
+    "not_exclusive": Rejector_NotExclusive,
 }
