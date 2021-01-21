@@ -80,8 +80,8 @@ def cli():
     if args.command == "generate":
         navi_generate(alphabet, args.size, args.n, checksum, args, rejectors=rejectors_d)
     elif args.command == "validate":
-        if args.barcodes:
-            navi_validate(args.barcodes, alphabet, checksum, args)
+        if args.ids:
+            navi_validate(args.ids, alphabet, checksum, args)
         elif args.csv:
             with open(args.csv[0]) as csv_fh:
                 for row in csv.DictReader(csv_fh):
