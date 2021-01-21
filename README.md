@@ -13,7 +13,7 @@ It attempts to generate identifiers that:
 * are somewhat chronologically sortable
 * are generated in a predictable fashion
 
-It generates human-friendly identifiers using `diceware` (soon) or the `zbase32` alphabet, and allows for screening of common sources of confusion such as look-alike pairs and repetitive characters. `Naaaavi` also provides limited support for generating `ZPL` to print your nice new barcodes.
+It generates human-friendly identifiers using `diceware` (soon) or the `zbase32` alphabet, and allows for screening of common sources of confusion such as look-alike pairs and repetitive characters. `Naaaavi` also provides limited support for generating `ZPL` to print your nice new identifiers.
 
 ## What is it not?
 
@@ -26,7 +26,7 @@ It generates human-friendly identifiers using `diceware` (soon) or the `zbase32`
 
 ## How do I use it?
 
-### Generate barcodes
+### Generate identifiers
 
     $ naaaavi generate --alphabet zbase32 --checksum luhn_mod_n --size 5 --rejectors max_repeats:2 min_unique:3 ismp_flips: better_profanity: -n 10 --prefix 'HOOT-' --upper
     HOOT-YYBYN4     HOOT-YYBYN      4       zbase32 luhn_mod_n      max_repeats:2;min_unique:3;ismp_flips:;better_profanity:        0.4.1
@@ -40,7 +40,7 @@ It generates human-friendly identifiers using `diceware` (soon) or the `zbase32`
     HOOT-YYBYKK     HOOT-YYBYK      K       zbase32 luhn_mod_n      max_repeats:2;min_unique:3;ismp_flips:;better_profanity:        0.4.1
     HOOT-YYBYME     HOOT-YYBYM      E       zbase32 luhn_mod_n      max_repeats:2;min_unique:3;ismp_flips:;better_profanity:        0.4.1
 
-### Validate barcodes
+### Validate identifiers
 
     $ naaaavi validate --alphabet zbase32 --checksum luhn_mod_n --barcodes HOOT-YYBYN.4 HOOT-YYBYN4 YYBYN4 YYBYM4 YYBYN5
     HOOT-YYBYN.4    1
@@ -63,7 +63,7 @@ It generates human-friendly identifiers using `diceware` (soon) or the `zbase32`
 
 ### I work in COG and would love to use this too!
 
-`Naaaavi` does not generate globally or universally unique identifiers, so please get in touch to make sure our (barcode) worlds don't collide.
+`Naaaavi` does not generate globally or universally unique identifiers, so please get in touch to make sure our (identifier) worlds don't collide.
 
 ### I don't like your funny command name
 
