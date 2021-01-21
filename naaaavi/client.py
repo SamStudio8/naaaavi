@@ -20,7 +20,11 @@ def cli():
     generate_parser.add_argument("-n", required=False, type=int, default=1)
     generate_parser.add_argument("--rejectors",  nargs='+', required=False)
 
-    generate_parser.add_argument("--last-code", required=False, type=str, default=None)
+    begin_group = generate_parser.add_mutually_exclusive_group(required=False)
+    begin_group.add_argument("--last-code", required=False, type=str, default=None)
+    begin_group.add_argument("--start-code", required=False, type=str, default=None)
+
+    generate_parser.add_argument("--end-code", required=False, type=str, default=None)
 
     generate_parser.add_argument("--prefix", required=False, type=str, default="")
     generate_parser.add_argument("--upper", required=False, action="store_true",
@@ -29,9 +33,9 @@ def cli():
 
     validate_parser = action_parser.add_parser("validate")
     validate_source_group = validate_parser.add_mutually_exclusive_group(required=True)
-    validate_source_group.add_argument("--barcodes",  nargs='+')
+    validate_source_group.add_argument("--ids", "--barcodes",  nargs='+')
     validate_source_group.add_argument("--csv", nargs=2, metavar=('fn', 'column'),
-            help="File name and column name to validate barcodes from")
+            help="File name and column name to validate identifiers from")
 
     validate_parser.add_argument("--alphabet", required=True)
     validate_parser.add_argument("--checksum", required=True)
@@ -103,25 +107,49 @@ def navi_generate(alphabet, size, rounds, checksum, args, rejectors={}):
     n_gen_total = 1
     n_gen_valid = 0
 
+    start_at = None
+    start_type = ""
     if args.last_code:
-        # Map the last barcode to code point space and increment it to start
-        sys.stderr.write("[WARN] You have provided last_code %s. This MUST NOT have a check digit to start from the correct last position.\n" % args.last_code)
-        last_barcode = args.last_code.split("-", 1)[-1].replace('.', '').replace('-', '')
+        start_at = args.last_code
+        start_type = "last"
+    elif args.start_code:
+        start_at = args.start_code
+        start_type = "start"
 
-        if len(last_barcode) > size:
-            sys.stderr.write("[FAIL] You have provided last_code %s, but it is longer than the requested size of the barcode. Did you accidentally forget to remove the check digit?\n" % args.last_code)
+    if start_at:
+        # Map the last barcode to code point space and increment it to start
+        start_barcode = start_at.split("-", 1)[-1].replace('.', '').replace('-', '')
+
+        if len(start_barcode) > size:
+            sys.stderr.write("[FAIL] You have provided %s_code %s, but it is longer than the requested size of the barcode. Did you accidentally forget to remove the check digit?\n" % (start_type, start_at))
             sys.exit(4)
 
-        candidate_barcode = [ alphabet.index(b.lower()) for b in last_barcode ]
-        if len(last_barcode) < size:
-            sys.stderr.write("[WARN] You have provided last_code %s, but it is shorter than the requested size of the barcode. Starting with last_code as a prefix and suffxing the remainder of the barcode with the start of the selected alphabet.\n" % args.last_code)
-            candidate_barcode.extend( [0] * (size - len(last_barcode)) )
+        candidate_barcode = [ alphabet.index(b.lower()) for b in start_barcode ]
+        if len(start_barcode) < size:
+            sys.stderr.write("[WARN] You have provided %s_code %s, but it is shorter than the requested size of the barcode. Suffxing the remainder of the barcode with the start of the selected alphabet.\n" % (start_type, start_at))
+            candidate_barcode.extend( [0] * (size - len(start_barcode)) )
 
-        candidate_barcode = _gen_increment_barcode_positions(candidate_barcode, -1, alphabet)
+        if args.last_code:
+            # Rotate if using last_code not start_code
+            candidate_barcode = _gen_increment_barcode_positions(candidate_barcode, -1, alphabet)
     else:
         candidate_barcode = [0] * size
 
-    # Attempt to generate n rounds of barcodes, but abort if we've spent more than n_rounds*1000
+    end_candidate_barcode = None
+    if args.end_code:
+        if rounds == 1:
+            rounds = len(alphabet) ** size
+        end_barcode = args.end_code.split("-", 1)[-1].replace('.', '').replace('-', '')
+        if len(end_barcode) > size:
+            sys.stderr.write("[FAIL] You have provided %s_code %s, but it is longer than the requested size of the barcode. Did you accidentally forget to remove the check digit?\n" % ("end", args.end_code))
+            sys.exit(4)
+
+        end_candidate_barcode = [ alphabet.index(b.lower()) for b in end_barcode ]
+        if len(end_barcode) < size:
+            sys.stderr.write("[WARN] You have provided %s_code %s, but it is shorter than the requested size of the barcode. Suffxing the remainder of the barcode with the start of the selected alphabet.\n" % ("end", args.end_code))
+            end_candidate_barcode.extend( [0] * (size - len(end_barcode)) )
+
+    # Attempt to generate n rounds of barcodes, but abort if we've spent more than n_rounds*1M
     while n_gen_valid < rounds:
         valid = True # assume this candidate is not garbage
 
@@ -171,6 +199,12 @@ def navi_generate(alphabet, size, rounds, checksum, args, rejectors={}):
         if n_gen_total > (rounds * 1000000):
             sys.stderr.write("[WARN] Failed to generate the set number of barcodes. Your rejectors may be too restrictive.\n")
             break
+
+        if end_candidate_barcode:
+            if candidate_barcode >= end_candidate_barcode:
+                sys.stderr.write("[NOTE] Reached end code.\n")
+                break
+
 
 def navi_validate(barcodes, alphabet, checksum, args):
     for barcode in barcodes:
