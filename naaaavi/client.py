@@ -60,7 +60,8 @@ def cli():
         if args.rejectors:
 
             for rejector in args.rejectors:
-                rejector_name, rejector_conf = rejector.lower().split(':')
+                rejector_name, rejector_conf = rejector.split(':')
+                rejector_name = rejector_name.lower()
                 if rejector_name not in NAVI_REJECTORS:
                     sys.stderr.write("[FAIL] Rejector '%s' not in rejectors\n" % rejector_name)
                     ok = False
