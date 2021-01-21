@@ -208,14 +208,15 @@ class Rejector_BetterProfanity(NaviRejector):
 class Rejector_NotExclusive(NaviRejector):
     def __init__(self, conf):
         self.name = "not_exclusive"
-        self.symbols = list(conf[0])
+        self.symbols = set(list(conf[0]))
         super().__init__(conf)
 
     def handle_barcode(self, int_barcode, str_barcode):
-        for symbol in str_barcode:
-            if symbol not in self.symbols:
-                return False # return false to not reject
-        return True
+
+        id_set = set(list(str_barcode))
+        if len(id_set - self.symbols) == 0:
+            return True # true to reject
+        return False
 
 
 REJECTORS = {
