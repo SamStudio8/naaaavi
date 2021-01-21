@@ -94,7 +94,7 @@ def _gen_increment_barcode_positions(barcode, i, alphabet):
     try:
         barcode[i] += 1
     except IndexError:
-        sys.stderr.write("[FAIL] Barcode space appears to have been exhausted. Larger --size required.\n")
+        sys.stderr.write("[FAIL] Identifier space appears to have been exhausted. Larger --size required.\n")
         sys.exit(3)
 
     if barcode[i] >= len(alphabet):
@@ -121,12 +121,12 @@ def navi_generate(alphabet, size, rounds, checksum, args, rejectors={}):
         start_barcode = start_at.split("-", 1)[-1].replace('.', '').replace('-', '')
 
         if len(start_barcode) > size:
-            sys.stderr.write("[FAIL] You have provided %s_code %s, but it is longer than the requested size of the barcode. Did you accidentally forget to remove the check digit?\n" % (start_type, start_at))
+            sys.stderr.write("[FAIL] You have provided %s_code %s, but it is longer than the requested size of the identifier. Did you accidentally forget to remove the check digit?\n" % (start_type, start_at))
             sys.exit(4)
 
         candidate_barcode = [ alphabet.index(b.lower()) for b in start_barcode ]
         if len(start_barcode) < size:
-            sys.stderr.write("[WARN] You have provided %s_code %s, but it is shorter than the requested size of the barcode. Suffxing the remainder of the barcode with the start of the selected alphabet.\n" % (start_type, start_at))
+            sys.stderr.write("[WARN] You have provided %s_code %s, but it is shorter than the requested size of the identifier. Suffxing the remainder of the identifier with the start of the selected alphabet.\n" % (start_type, start_at))
             candidate_barcode.extend( [0] * (size - len(start_barcode)) )
 
         if args.last_code:
@@ -141,12 +141,12 @@ def navi_generate(alphabet, size, rounds, checksum, args, rejectors={}):
             rounds = len(alphabet) ** size
         end_barcode = args.end_code.split("-", 1)[-1].replace('.', '').replace('-', '')
         if len(end_barcode) > size:
-            sys.stderr.write("[FAIL] You have provided %s_code %s, but it is longer than the requested size of the barcode. Did you accidentally forget to remove the check digit?\n" % ("end", args.end_code))
+            sys.stderr.write("[FAIL] You have provided %s_code %s, but it is longer than the requested size of the identifier. Did you accidentally forget to remove the check digit?\n" % ("end", args.end_code))
             sys.exit(4)
 
         end_candidate_barcode = [ alphabet.index(b.lower()) for b in end_barcode ]
         if len(end_barcode) < size:
-            sys.stderr.write("[WARN] You have provided %s_code %s, but it is shorter than the requested size of the barcode. Suffxing the remainder of the barcode with the start of the selected alphabet.\n" % ("end", args.end_code))
+            sys.stderr.write("[WARN] You have provided %s_code %s, but it is shorter than the requested size of the identifier. Suffxing the remainder of the identifier with the start of the selected alphabet.\n" % ("end", args.end_code))
             end_candidate_barcode.extend( [0] * (size - len(end_barcode)) )
 
     # Attempt to generate n rounds of barcodes, but abort if we've spent more than n_rounds*1M
@@ -163,7 +163,7 @@ def navi_generate(alphabet, size, rounds, checksum, args, rejectors={}):
             try:
                 check_int, check_char = checksum("generate", str_barcode, alphabet)
             except Exception as e:
-                sys.stderr.write("[FAIL] Could not generate %s checksum for barcode %s. Exception: %s\n" % (args.checksum, str_barcode, str(e)))
+                sys.stderr.write("[FAIL] Could not generate %s checksum for identifier %s. Exception: %s\n" % (args.checksum, str_barcode, str(e)))
                 sys.exit(2)
 
 
@@ -197,7 +197,7 @@ def navi_generate(alphabet, size, rounds, checksum, args, rejectors={}):
         n_gen_total += 1
 
         if n_gen_total > (rounds * 1000000):
-            sys.stderr.write("[WARN] Failed to generate the set number of barcodes. Your rejectors may be too restrictive.\n")
+            sys.stderr.write("[WARN] Failed to generate the set number of identifiers. Your rejectors may be too restrictive.\n")
             break
 
         if end_candidate_barcode:
