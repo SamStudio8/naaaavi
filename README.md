@@ -5,7 +5,7 @@ Naming avoiding ambiguity automatically assigning valid identifiers
 ## What is it?
 
 `Naaaavi` (pronounced `nah-vee` as if someone hadn't injected a load of ambiguous confusing `a` characters) is a simple Python tool for generating identifiers.
-It attempts to generate identifiers that:
+It is an ambitious attempt to solve one of the most difficult problems in computer science: naming things. `Naaavi` attempts to generate identifiers that:
 
 * use a character set (or other system) that aims to be human-friendly
 * can be checksummed
