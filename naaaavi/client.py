@@ -19,6 +19,7 @@ def cli():
     generate_parser.add_argument("--size", required=True, type=int)
     generate_parser.add_argument("-n", required=False, type=int, default=1)
     generate_parser.add_argument("--rejectors",  nargs='+', required=False)
+    generate_parser.add_argument("--invert-rejectors",  action="store_true")
 
     begin_group = generate_parser.add_mutually_exclusive_group(required=False)
     begin_group.add_argument("--last-code", required=False, type=str, default=None)
@@ -174,6 +175,13 @@ def navi_generate(alphabet, size, rounds, checksum, args, rejectors={}):
                 valid = False
                 break # bail on the first sign this barcode is trash
 
+        # If you want the garbage identifiers, flip the valid flag
+        if args.invert_rejectors:
+            if valid:
+                valid = False
+            else:
+                valid = True
+
         if valid:
             if args.upper:
                 str_barcode = str_barcode.upper()
@@ -187,7 +195,7 @@ def navi_generate(alphabet, size, rounds, checksum, args, rejectors={}):
                 check_char,
                 args.alphabet,
                 args.checksum,
-                ';'.join(["%s" % rejector.get_log_line() for rejector_name, rejector in rejectors.items()]),
+                ';'.join(["%s" % rejector.get_log_line() for rejector_name, rejector in rejectors.items()]) + ';invert_rejectors:%s' % args.invert_rejectors,
                 __version__,
             ]) + '\n')
 
