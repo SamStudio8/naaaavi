@@ -5,6 +5,7 @@ import setuptools
 from naaaavi import version
 
 requirements = [
+    "better_profanity"
 ]
 
 test_requirements = [
